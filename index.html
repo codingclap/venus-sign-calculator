@@ -1,0 +1,1357 @@
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    @font-face {
+        font-family: 'Cabin Medium';
+        src: url('infographics/fonts/Cabin-Medium.ttf') format('truetype');
+    }
+
+    @font-face {
+        font-family: 'Cabin Regular';
+        src: url('infographics/fonts/Cabin-Regular.ttf') format('truetype');
+        font-weight: 400;
+    }
+
+    @font-face {
+        font-family: 'Cabin Bold';
+        src: url('infographics/fonts/Cabin-Bold.ttf') format('truetype');
+    }
+
+    @font-face {
+        font-family: 'Dancing Script';
+        src: url('infographics/fonts/DancingScript.ttf') format('truetype');
+    }
+
+    #venus-calculator {
+        --container-max-width: 1024px;
+        --divider-max-width: 980px;
+        --primary-color: #fff;
+        --secondary-color: #f4954e;
+        --btn-text-color: #4c1c1c;
+        --input-bg-color: rgba(240, 184, 121, 0.2);
+        --input-border-color: #fff7;
+    }
+
+    #venus-calculator {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-size: clamp(16px, calc(5vw + 0.5rem), 20px);
+        text-align: center;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+        color: var(--primary-color);
+        font-family: 'Cabin Regular';
+        min-height: 100vh;
+    }
+
+    :where(#venus-calculator *) {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .venus-header {
+        height: 4vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .venus-main {
+        width: min(90%, var(--container-max-width));
+        margin: 0 auto;
+    }
+
+    .venus-header img {
+        height: min(50px, 10vh);
+    }
+
+    .venus-main>#venus-input-container,
+    .venus-main>#venus-result-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: top;
+        margin: 0 auto;
+        margin-top: 1em;
+    }
+
+    /* Inputs */
+    #venus-horoscope-form {
+        text-align: start;
+        width: min(90%, calc(var(--container-max-width) * 0.8));
+        margin-top: 2em;
+    }
+
+    #venus-horoscope-form fieldset {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 1em;
+        width: 100%;
+        margin: 0.5em auto;
+        border: none;
+    }
+
+    @media (max-width: 500px) {
+        #venus-horoscope-form fieldset {
+            flex-direction: column;
+            gap: 0.5em;
+        }
+    }
+
+    #venus-horoscope-form fieldset>label {
+        font-size: 1.07em;
+        white-space: nowrap;
+        width: 98px;
+        display: inline-block;
+        font-family: 'Cabin Bold';
+    }
+
+    .venus-inputs-container {
+        display: flex;
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    #venus-input-container .h1 {
+        font-family: 'Dancing Script';
+        font-size: 3.5em;
+        margin: 0 auto;
+        padding: 0;
+        color: #f4954e;
+    }
+
+    #venus-input-container p {
+        font-size: 1em;
+        margin: 1.5em 2em auto;
+        line-height: 30px;
+    }
+
+    .venus-inputs-container input,
+    .venus-inputs-container select {
+        width: 100%;
+        height: 2em;
+        border: 1.9px solid #fff;
+        border-radius: 5px;
+        padding-left: 0.5em;
+        background-color: rgba(243, 166, 88, 0.28);
+        color: var(--primary-color);
+        font-size: 1em;
+        text-align: start;
+        margin: 0 0.2em;
+        cursor: pointer;
+        transition: background-color 0.25s linear;
+    }
+
+    .venus-inputs-container input:hover,
+    .venus-inputs-container select:hover,
+    .venus-inputs-container input:active,
+    .venus-inputs-container select:active {
+        background-color: #fff2;
+    }
+
+    .venus-inputs-container option {
+        color: black;
+        background-color: white;
+        max-height: 300px;
+    }
+
+    #venus-result-container .h1 {
+        font-family: 'Dancing Script';
+        font-size: 3.5em;
+        margin: 0 auto;
+        padding: 0;
+        color: #f4954e;
+    }
+
+    #venus-submit-button {
+        text-align: center;
+        font-size: 1.12em;
+    }
+
+    #venus-place-container {
+        position: relative;
+        width: 100%;
+    }
+
+    #venus-place-input-container {
+        flex-wrap: wrap;
+    }
+
+    #venus-place-suggestions {
+        position: absolute;
+        background: var(--primary-color);
+        color: black;
+        list-style: none;
+        padding: 0;
+        max-height: 200px;
+        overflow-y: scroll;
+        width: 100%;
+        z-index: 1;
+    }
+
+    #venus-place-suggestions li {
+        padding: 0.4em;
+        cursor: pointer;
+        border-bottom: 2px solid #ccc;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    #venus-place-suggestions li:hover {
+        background: var(--secondary-color);
+        color: var(--primary-color);
+    }
+
+    #venus-submit-button {
+        justify-content: center !important;
+    }
+
+    #venus-submit-button input {
+        font-size: 1em;
+        padding: 0.4em 1.5em;
+        color: var(--btn-text-color);
+        background: #f4954e;
+        border: none;
+        margin-top: 2em;
+        cursor: pointer;
+        font-family: 'Cabin Bold';
+        border-radius: 40px;
+    }
+
+    #venus-jump-btn button {
+        font-size: 1.1em;
+        padding: 0.7em 3em 0.7em 1.3em;
+        color: #0c0c0c;
+        background: #f4954e;
+        border: none;
+        margin-top: 2em;
+        margin-bottom: 2em;
+        cursor: pointer;
+        font-family: 'Cabin Regular';
+        border-radius: 40px;
+        position: relative;
+    }
+
+    #venus-jump-btn button:after {
+        position: absolute;
+        content: " ";
+        background-image: url(infographics/rising-sign-calculator/arrow.svg);
+        background-repeat: no-repeat;
+        height: 29px;
+        width: 16px;
+        right: 28px;
+        top: 15px;
+    }
+
+    #venus-submit-button input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    #venus-submit-button input:focus {
+        background: var(--secondary-color);
+        opacity: 0.9;
+    }
+
+    .venus-hidden {
+        display: none !important;
+    }
+
+    .anime-hidden {
+        animation: fadeOut 2s forwards;
+    }
+
+    .anime-visible {
+        animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        to {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    /* Result */
+    #venus-result-container {
+        font-size: 1em;
+    }
+
+    #venus-result {
+        width: min(100%, var(--container-max-width));
+        padding: 1.5em 2em 1.3em 2em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2.5em;
+        border: 2px solid #f4954e;
+        background: rgba(243, 166, 88, 0.20);
+        border-radius: 0.2em;
+        margin: 0.2em 1em 2em 1em;
+    }
+
+    #venus-result .venus-result-box {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        max-width: 285px;
+        justify-content: start;
+        align-items: center;
+        gap: 2px;
+        position: relative;
+        min-height: 195px;
+    }
+
+
+    #venus-result .venus-result-box:after {
+        position: absolute;
+        content: "";
+        height: 100%;
+        border-right: 1px solid #85909b;
+        right: -25px;
+    }
+
+    #venus-result .venus-result-box:last-child:after {
+        border: 0px solid black;
+    }
+
+    #venus-result .venus-result-box .venus-result-img {
+        width: 70px;
+    }
+
+    #venus-result .venus-result-box h3.venus-result-head {
+        font-family: 'Cabin Bold';
+        font-size: 1.4em;
+        line-height: 1em;
+        color: #f4954e;
+        padding: 10px 0px 0px;
+    }
+
+    #venus-result .venus-result-box p.venus-result-para {
+        font-family: 'Cabin Regular';
+        font-size: 1.1em;
+        line-height: 1.2em;
+        color: #ffffff;
+        padding: 4px 0px 0px;
+    }
+
+
+
+    #venus-result .column-separator {
+        align-self: normal;
+        width: 112px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (max-width: 900px) {
+        #venus-result {
+            flex-direction: column;
+            padding: 1em 0.5em;
+        }
+
+        #venus-result .column-separator {
+            display: none;
+        }
+
+        #venus-result .venus-result-box:after {
+            position: absolute;
+            content: "";
+            height: 100%;
+            border-right: 0px;
+            right: 0px;
+            border-bottom: 1px solid #85909b;
+            top: 25px;
+            width: 100%;
+        }
+    }
+
+    #venus-result .column-separator img {
+        width: 100%;
+        height: 100%;
+    }
+
+    #venus-venus-sign {
+        font-family: 'Dancing Script';
+        font-size: 3em;
+        margin-bottom: 0.2em;
+        color: var(--secondary-color);
+    }
+
+    #venus-zodiac-sign-image img {
+        width: min(80vw, 120px);
+        min-width: 120px;
+    }
+
+    #venus-zodiac-details {
+        text-align: start;
+        padding: 1em;
+    }
+
+    #venus-zodiac-description {
+        font-family: 'Cabin Regular';
+        font-size: 1em;
+        line-height: 1.5em;
+    }
+
+    #venus-result-container>p {
+        width: min(100%, var(--container-max-width));
+        line-height: 1.5em;
+    }
+
+    #venus-retry p {
+        cursor: pointer;
+        color: var(--secondary-color, orange);
+        margin: 1em auto;
+        font-family: 'Cabin Bold';
+    }
+
+    #venus-left-arrow {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+
+    #venus-retry p {
+        animation: slideHorizontally 0.5s ease-in-out 0ms infinite forwards alternate;
+    }
+
+    @keyframes slideHorizontally {
+        0% {
+            transform: translateX(0px);
+        }
+
+        100% {
+            transform: translateX(-10px);
+        }
+    }
+
+    #venus-divider {
+        width: min(100%, var(--divider-max-width));
+        margin: 0.5em auto;
+    }
+
+    #venus-resources>.venus-resource-links {
+        margin-top: 0.2em;
+        margin-bottom: 0.5em;
+    }
+
+    #venus-resources>.venus-resource-links>a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 0.8em;
+        margin: 0;
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+
+    .venus-loader {
+        background-color: transparent;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+    }
+
+    .venus-loader>figure {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background-color: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        animation: spin 1s infinite linear;
+    }
+
+    .venus-loader>figure>img {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<div id="venus-calculator" class="venus-container" style="background: url(infographics/rising-sign-calculator/BG-1.jpg)">
+    <div class="venus-loader anime-hidden">
+        <figure class="venus-loading-images"></figure>
+    </div>
+    <div class="venus-header"> </div>
+    <div class="venus-main">
+
+        <!--------------------------------- First Page End ---------------------------------->
+        <div id="venus-input-container" class="">
+            <img src="infographics/rising-sign-calculator/PS-logo.png" width="280px"><br>
+            <h2 class="h1" style="width:80%">Venus Sign Calculator</h2>
+            <!-- <img src="infographics/rising-sign-calculator/underline.svg" width="87%"> -->
+            <p style="width:80%">Named after the goddess of beauty and love, the planet Venus plays a major role in your
+                relationships. The house it resides in on your birth chart reveals what you look for and how you express
+                yourself in relationships, both casual and romantic. Its position can illuminate your stellar social
+                attributes as well as your potential pitfalls, giving you valuable insights that will help strengthen
+                and improve partnerships throughout your life.
+            </p>
+            <form id="venus-horoscope-form" data-gtm-form-interact-id="0">
+                <fieldset id="venus-birth_date"><label for="venus-birth_date">Birth Date:</label>
+                    <div class="venus-inputs-container"><label hidden="" for="venus-month">Month:</label><select
+                            id="venus-month" name="month" required="" data-gtm-form-interact-field-id="0">
+                            <option hidden="" disabled="disabled" selected="selected" value="">MM</option>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select><label hidden="" for="venus-day">Day:</label><select id="venus-day" name="day"
+                            required="" data-gtm-form-interact-field-id="1">
+                            <option hidden="" disabled="disabled" selected="selected" value="">DD</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                        </select><label hidden="" for="venus-year">Year:</label><select id="venus-year" name="year"
+                            required="" data-gtm-form-interact-field-id="2">
+                            <option hidden="" disabled="disabled" selected="selected" value="">YYYY</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="2007">2007</option>
+                            <option value="2006">2006</option>
+                            <option value="2005">2005</option>
+                            <option value="2004">2004</option>
+                            <option value="2003">2003</option>
+                            <option value="2002">2002</option>
+                            <option value="2001">2001</option>
+                            <option value="2000">2000</option>
+                            <option value="1999">1999</option>
+                            <option value="1998">1998</option>
+                            <option value="1997">1997</option>
+                            <option value="1996">1996</option>
+                            <option value="1995">1995</option>
+                            <option value="1994">1994</option>
+                            <option value="1993">1993</option>
+                            <option value="1992">1992</option>
+                            <option value="1991">1991</option>
+                            <option value="1990">1990</option>
+                            <option value="1989">1989</option>
+                            <option value="1988">1988</option>
+                            <option value="1987">1987</option>
+                            <option value="1986">1986</option>
+                            <option value="1985">1985</option>
+                            <option value="1984">1984</option>
+                            <option value="1983">1983</option>
+                            <option value="1982">1982</option>
+                            <option value="1981">1981</option>
+                            <option value="1980">1980</option>
+                            <option value="1979">1979</option>
+                            <option value="1978">1978</option>
+                            <option value="1977">1977</option>
+                            <option value="1976">1976</option>
+                            <option value="1975">1975</option>
+                            <option value="1974">1974</option>
+                            <option value="1973">1973</option>
+                            <option value="1972">1972</option>
+                            <option value="1971">1971</option>
+                            <option value="1970">1970</option>
+                            <option value="1969">1969</option>
+                            <option value="1968">1968</option>
+                            <option value="1967">1967</option>
+                            <option value="1966">1966</option>
+                            <option value="1965">1965</option>
+                            <option value="1964">1964</option>
+                            <option value="1963">1963</option>
+                            <option value="1962">1962</option>
+                            <option value="1961">1961</option>
+                            <option value="1960">1960</option>
+                            <option value="1959">1959</option>
+                            <option value="1958">1958</option>
+                            <option value="1957">1957</option>
+                            <option value="1956">1956</option>
+                            <option value="1955">1955</option>
+                            <option value="1954">1954</option>
+                            <option value="1953">1953</option>
+                            <option value="1952">1952</option>
+                            <option value="1951">1951</option>
+                            <option value="1950">1950</option>
+                            <option value="1949">1949</option>
+                            <option value="1948">1948</option>
+                            <option value="1947">1947</option>
+                            <option value="1946">1946</option>
+                            <option value="1945">1945</option>
+                            <option value="1944">1944</option>
+                            <option value="1943">1943</option>
+                            <option value="1942">1942</option>
+                            <option value="1941">1941</option>
+                            <option value="1940">1940</option>
+                            <option value="1939">1939</option>
+                            <option value="1938">1938</option>
+                            <option value="1937">1937</option>
+                            <option value="1936">1936</option>
+                            <option value="1935">1935</option>
+                            <option value="1934">1934</option>
+                            <option value="1933">1933</option>
+                            <option value="1932">1932</option>
+                            <option value="1931">1931</option>
+                            <option value="1930">1930</option>
+                            <option value="1929">1929</option>
+                            <option value="1928">1928</option>
+                            <option value="1927">1927</option>
+                            <option value="1926">1926</option>
+                            <option value="1925">1925</option>
+                            <option value="1924">1924</option>
+                            <option value="1923">1923</option>
+                            <option value="1922">1922</option>
+                            <option value="1921">1921</option>
+                            <option value="1920">1920</option>
+                            <option value="1919">1919</option>
+                            <option value="1918">1918</option>
+                            <option value="1917">1917</option>
+                            <option value="1916">1916</option>
+                            <option value="1915">1915</option>
+                            <option value="1914">1914</option>
+                            <option value="1913">1913</option>
+                            <option value="1912">1912</option>
+                            <option value="1911">1911</option>
+                            <option value="1910">1910</option>
+                            <option value="1909">1909</option>
+                            <option value="1908">1908</option>
+                            <option value="1907">1907</option>
+                            <option value="1906">1906</option>
+                            <option value="1905">1905</option>
+                            <option value="1904">1904</option>
+                            <option value="1903">1903</option>
+                            <option value="1902">1902</option>
+                            <option value="1901">1901</option>
+                        </select></div>
+                </fieldset>
+                <fieldset id="venus-birth_time"><label for="venus-birth_time">Birth Time: </label>
+                    <div class="venus-inputs-container"><label hidden="" for="venus-hour">hour:</label><select
+                            id="venus-hour" name="hour" required="" data-gtm-form-interact-field-id="4">
+                            <option hidden="" disabled="disabled" selected="selected" value="">HH</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="00">12</option>
+                        </select><label hidden="" for="venus-minute">minute:</label><select id="venus-minute"
+                            name="minute" required="" data-gtm-form-interact-field-id="3">
+                            <option hidden="" disabled="disabled" selected="selected" value="">MM</option>
+                            <option value="00">00</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                            <option value="32">32</option>
+                            <option value="33">33</option>
+                            <option value="34">34</option>
+                            <option value="35">35</option>
+                            <option value="36">36</option>
+                            <option value="37">37</option>
+                            <option value="38">38</option>
+                            <option value="39">39</option>
+                            <option value="40">40</option>
+                            <option value="41">41</option>
+                            <option value="42">42</option>
+                            <option value="43">43</option>
+                            <option value="44">44</option>
+                            <option value="45">45</option>
+                            <option value="46">46</option>
+                            <option value="47">47</option>
+                            <option value="48">48</option>
+                            <option value="49">49</option>
+                            <option value="50">50</option>
+                            <option value="51">51</option>
+                            <option value="52">52</option>
+                            <option value="53">53</option>
+                            <option value="54">54</option>
+                            <option value="55">55</option>
+                            <option value="56">56</option>
+                            <option value="57">57</option>
+                            <option value="58">58</option>
+                            <option value="59">59</option>
+                        </select><label hidden="" for="venus-phase">AM/PM</label><select id="venus-phase" name="phase"
+                            required="" data-gtm-form-interact-field-id="5">
+                            <option selected="selected" value="am">AM</option>
+                            <option value="pm">PM</option>
+                        </select></div>
+                </fieldset>
+                <fieldset id="venus-birth_place"><label for="venus-place">Birth Place: </label>
+                    <div class="venus-inputs-container" id="venus-place-input-container"><input name="place" type="text"
+                            data-gtm-form-interact-field-id="6">
+                        <div id="venus-place-container"></div>
+                    </div>
+                </fieldset>
+                <fieldset id="venus-submit-button"><input type="submit" value="Submit" disabled=""></fieldset>
+            </form>
+        </div>
+        <!--------------------------------- First Page End ---------------------------------->
+
+        <!--------------------------------- Second Page ---------------------------------->
+        <div id="venus-result-container" class="venus-hidden">
+            <img src="infographics/rising-sign-calculator/PS-logo.png" width="280px">
+            <div id="venus-zodiac-sign-image" style="padding:1em 0em;"></div>
+            <h2 class="h1" id="venus-main-heading" style="width:80%">Venus in the First House</h2>
+            <img src="infographics/rising-sign-calculator/result-heading-img.svg" width="30%" style="padding:1em 0em;">
+
+            <div id="venus-result">
+                 <!-- <div id="venus-zodiac-sign-image"></div> -->
+                <!-- <div class="column-separator"><img
+                        src="sinfographics/rising-sign-calculator/column-separator.png" alt="|"
+                        loading="lazy"></div>
+                <div id="venus-zodiac-details">
+                    <h2 id="venus-venus-sign"></h2>
+                    <p id="venus-zodiac-description"></p>
+                </div>   -->
+
+                <div class="venus-result-box">
+                    <img class="venus-result-img" src="infographics/rising-sign-calculator/talent.svg" alt="">
+                    <h3 class="venus-result-head">Talents</h3>
+                    <p class="venus-result-para" id="talents">Music and poetry</p>
+                </div>
+                <div class="venus-result-box">
+                    <img class="venus-result-img" src="infographics/rising-sign-calculator/Strengths.svg" alt="">
+                    <h3 class="venus-result-head">Strengths</h3>
+                    <p class="venus-result-para" id="strengths">Conscientious, empathetic, and warm</p>
+                </div>
+                <div class="venus-result-box">
+                    <img class="venus-result-img" src="infographics/rising-sign-calculator/Weakness.svg" alt="">
+                    <h3 class="venus-result-head">Weakness</h3>
+                    <p class="venus-result-para" id="weakness"> Self consciousness, passive-aggressive behavior</p>
+                </div>
+
+            </div>
+            <!---------- venus Description ----------->
+            <p id="venus-zodiac-description">Exploring the house that Venus resides in can provide valuable insights, but this information must be balanced with details about where the other planets sit in your chart. Consult with a skilled astrologer or psychic to dive deeper into the influence that Venus has in your life.
+            </p>
+            <!---------- venus Description ----------->
+
+            <div id="venus-jump-btn">
+                <a href="" id="jumplink"><button id="button-jumplink">Continue reading about <b>Venus in the First House</b></button></a>
+            </div>
+            <div id="venus-divider"><img src="infographics/rising-sign-calculator/result-border-top.svg" alt="------"
+                    loading="lazy"></div>
+            <p>Exploring the house that Venus resides in can provide valuable insights, but this information must be balanced with details about where the other planets sit in your chart. Consult with a skilled astrologer or psychic to dive deeper into the <a style="color:#fff;" href="https://www.psychicsource.com/astrology/venus-astrology/23653">influence that Venus has</a> in your life.
+            </p>
+            <div id="venus-divider"><img src="infographics/rising-sign-calculator/result-border-bottom.svg" alt="------"
+                    loading="lazy"></div>
+
+            <div id="venus-retry">
+                <p><span id="venus-left-arrow"></span>
+                    << Start Again</p>
+            </div>
+
+            <!-- <div id="venus-resources">
+                        <h4>
+                            Resources:
+                        </h4>
+                        <div class="venus-resource-links">
+                            <a
+                                href="https://www.psychicsource.com/astrology/rising-signs/23628" target="_blank">
+                                https://www.psychicsource.com/astrology/rising-signs/23628
+                            </a>
+                            <br>
+                            <a
+                                href="https://www.allure.com/story/rising-sign-personality-traits-astrology-ascendant-signs" target="_blank">
+                                https://www.allure.com/story/rising-sign-personality-traits-astrology-ascendant-signs
+                            </a>
+                            <br>
+                            <a
+                                href="https://www.thecut.com/article/what-is-my-rising-ascendant-sign.html" target="_blank">
+                                https://www.thecut.com/article/what-is-my-rising-ascendant-sign.html
+                            </a>
+                        </div>
+                    </div> -->
+        </div>
+        <!--------------------------------- Second Page End---------------------------------->
+
+    </div>
+</div>
+
+
+<script>
+    const baseUrl = 'https://api.bloom.be/api';
+    const accessToken = "427774|k8QSt9xYqdJad7nb3MDvNl3ajLCt455WJpEgUVVK";
+
+    const venusSignsDetail = {
+        "Aries": {
+            about: "You're extremely likable and have no trouble attracting and maintaining a close circle of faithful friends. You may delay serious romantic relationships until later in your life. Though you're great at winning others over to your way of thinking, you have an indecisive streak that makes it difficult to settle on a direction. Once you find your north star, however, it's full speed ahead!",
+            image: "infographics/rising-sign-calculator/house-1.svg",
+            house:'First House',
+            talents: "Music and poetry",
+            strengths: "Conscientious, empathetic, and warm",
+            weaknesses: "Self consciousness, passive-aggressive behavior",
+            jumplink:"#venus_first_house"
+        },
+        "Taurus": {
+            about: "You have a taste for the extravagant and luxurious things in life. You have a tendency to try and win over partners with over-the-top gestures and opulent gifts. Make sure you keep your eyes on the person that you're wooing rather than the gifts you can offer them so your efforts are well spent. When you do find the right partner, you'll slip easily into a long-lasting relationship.",
+            image: "infographics/rising-sign-calculator/house-2.svg",
+            house:'Second House',
+            talents: "Financial management",
+            strengths: "Communication",
+            weaknesses: "Preoccupation with material things",
+            jumplink:"#venus_second_house"
+        },
+        "Gemini": {
+            about: "Harmonious partnerships feel like second nature with Venus residing in your third house. You find it easy to maintain strong relationships with family members and neighbors. Peace and harmony come easily to you, and you often inspire these easygoing feelings in those around you. However, you're a force to be reckoned with when upset.",
+            image: "infographics/rising-sign-calculator/house-3.svg",
+            house:"Third House",
+            talents: "Poetry and literature",
+            strengths: "Mediation, flexibility",
+            weaknesses: "Hesitant to spend money",
+            jumplink:"#venus_third_house"
+        },
+        "Cancer": {
+            about: "You're very close to your parents and have an especially strong connection to your mother. It's not easy for you to give away your heart, but when you do, you do it in a big way. You're very sentimental in relationships and love making big romantic gestures to show your affection. This characteristic comes out when friends are in need as well. You show sympathy in big ways, delivering casseroles, helping with housework, and easing the burden on those in need.",
+            image: "infographics/rising-sign-calculator/house-4.svg",
+            house:"Fourth House",
+            talents: "Home decorating and entertaining",
+            strengths: "Romantic gestures",
+            weaknesses: "Managing your weight",
+            jumplink:"#venus_fourth_house"
+        },
+        "Leo": {
+            about: "You love to be the center of attention and the life of the party. You can slip into big social situations with ease, and always know how to point the evening in a pleasurable direction. You're very sensual in your relationships. Those lucky enough to enjoy an amorous encounter with you won't soon forget your romantic talents and thrilling skill in the bedroom.",
+            image: "infographics/rising-sign-calculator/house-5.svg",
+            house:'Fifth House',
+            talents: "Working with kids, theater, and drama",
+            strengths: "Navigating parties and other social situations",
+            weaknesses: "Overly flirtatious",
+            jumplink:"#venus_fifth_house"
+        },
+        "Virgo": {
+            about: "You have a heart for helping others. Find a partner whose love language is acts of service and you'll have the perfect fit. You're always on top of the seemingly small yet essential things that go into caring for others, like providing healthful meals and keeping the home neat. You appreciate beauty in all its forms and like to maintain a welcoming and aesthetically pleasing space.",
+            image: "infographics/rising-sign-calculator/house-6.svg",
+            house:"Sixth House",
+            talents: "Maintaining fitness and health",
+            strengths: "Humility, service",
+            weaknesses: "Overlooking romance",
+            jumplink:"#venus_sixth_house"
+        },
+        "Libra": {
+            about: "You have an undeniable magnetism that works like a charm on nearly everything you pursue. Others are drawn to you, business deals simply tend to go your way, and gatherings always feel a little more posh and exciting when you're in the room.",
+            image: "infographics/rising-sign-calculator/house-7.svg",
+            house:'Seventh House',
+            talents: "Business",
+            strengths: "Magnetically charming",
+            weaknesses: "Overly submissive",
+            jumplink:"#venus_seventh_house"
+        },
+        "Scorpio": {
+            about: "You're devoted and dedicated in your relationships, giving your all to your romantic partner. Others are drawn to your deep, mysterious charm while you're drawn to all things odd or unconventional. You likely have psychic abilities and a special skill for manifestation that helps brings your desires into reality.",
+            image: "infographics/rising-sign-calculator/house-8.svg",
+            house:"Eighth House",
+            talents: "Acquiring wealth",
+            strengths: "Charm and devotion",
+            weaknesses: "Fear of betrayal",
+            jumplink:"#venus_eighth_house"
+        },
+        "Sagittarius": {
+            about: "You have an adventurous nature and love to travel and experience new things. You need relationships that offer plenty of freedom. Whether you're off exploring new lands or pursuing a religious pilgrimage, when you need to go it's crucial that your friends and family allow it.",
+            image: "infographics/rising-sign-calculator/house-9.svg",
+            house:"Ninth House",
+            talents: "Navigating different cultures",
+            strengths: "Philosophical debate",
+            weaknesses: "Feeling the grass is greener",
+            jumplink:"#venus_ninth_house"
+        },
+        "Capricorn": {
+            about: "Venus offers a lot of support for your professional life. You're well-liked in the workplace and have all the charisma that you need to succeed in business and politics. Just make sure you're not so committed to your career that you forget to make time for love.",
+            image: "infographics/rising-sign-calculator/house-10.svg",
+            house:"Tenth House",
+            talents: "Debate and politics",
+            strengths: "Optimism",
+            weaknesses: "Worrying too much about public image",
+            jumplink:"#venus_tenth_house"
+        },
+        "Aquarius": {
+            about: "You're extremely social and maintain a packed calendar easily. You love to be surrounded by friends and have a knack for putting others at ease. Make sure you're not spread so thin that you can't give your friends and partner the attention that they need.",
+            image: "infographics/rising-sign-calculator/house-11.svg",
+            house:"Eleventh House",
+            talents: "Maintaining a large social circle",
+            strengths: "Tact",
+            weaknesses: "Over-indulgence",
+            jumplink:"#venus_eleventh_house"
+        },
+        "Pisces": {
+            about: "You have trouble trusting easily, but your charisma can charm nearly anyone. You're a bit introverted and prize your time alone. It's important for you to balance your solitude with the important relationships in your life.",
+            image: "infographics/rising-sign-calculator/house-12.svg",
+            house:"Tweleth House",
+            talents: "Art and creativity",
+            strengths: "Magnetic charm",
+            weaknesses: "Timidity",
+            jumplink:"#venus_tweleth_house"
+        }
+    }
+
+    const inputs = document.querySelector('#venus-input-container');
+    const results = document.querySelector('#venus-result-container');
+
+    const getPlaces = async (place) => {
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + accessToken,
+                "Content-Type": "application/json"
+            }
+        }
+        const data = {
+            "name": place
+        }
+        try {
+            const res = await axios.post(`${baseUrl}/places`, data, config);
+
+            console.log("Places =" + JSON.stringify(res.data));                        // fetch All Country from database
+
+            return res.data;
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+
+
+    // give suggestion of places, based on the input
+    const placeInput = document.querySelector('input[name="place"]');
+    const placeSuggestionBox = document.querySelector('#venus-place-container');
+    let place_id = null;
+
+    placeInput.addEventListener('keyup', async () => {
+        const placeValue = placeInput.value;
+        let places;
+        if (placeValue.length > 1) {
+            try {
+                places = await getPlaces(placeValue);
+            } catch (err) {
+                console.log(err);
+                return alert('API is not responsing right now. Please try again later.');
+            }
+            placeSuggestionBox.innerHTML = '';
+
+            if (places.data.length > 0) {
+                const placeContainer = document.createElement('ul');                   // Creating Birthplace <ul> - Dropdown
+                placeContainer.id = 'venus-place-suggestions';
+
+                places.data.forEach(place => {
+                    const placeName = place.name;                                      // Fetch Birthplace <li> - Dropdown
+                    const country_code = place.admin1_code;
+                    const timezone = place.timezone;
+                    const placeId = place.id;
+
+                    const placeOption = document.createElement('li');
+                    placeOption.id = placeId;
+                    placeOption.innerHTML = `${placeName}, ${country_code}, ${timezone}`;
+                    placeContainer.appendChild(placeOption);
+                })
+                placeSuggestionBox.appendChild(placeContainer);
+            }
+        } else {
+            placeSuggestionBox.innerHTML = '';
+        }
+    });
+
+
+    //     Final Trigger after Birthplace Selection
+    placeSuggestionBox.addEventListener('click', async (e) => {
+        place_id = e.target.id;
+        const placeName = e.target.innerText.split(',')[0];
+        const country_code = e.target.innerText.split(',')[1];
+        const timezone = e.target.innerText.split(',')[2];
+
+        placeInput.value = `${placeName},${country_code}`;                      // Finally User Selected in <li> dropdown 
+        placeSuggestionBox.innerHTML = '';
+    })
+
+
+    const getNatalHoroscope = async (name, date, time, place_id) => {
+        // name: String
+        // date: String (YYYY-MM-DD)
+        // time: String (HH:MM)
+        // place_id: Number
+
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + accessToken,
+                "Content-Type": "application/json"
+            }
+        }
+        const data = {
+            "name": name,
+            "date": date,
+            "time": time,
+            "place_id": place_id,
+            "lang": "en"
+        }
+        const res = await axios.post(`${baseUrl}/natal`, data, config);
+
+        console.log("After Submit Result == " + JSON.stringify(res.data));             // Fetch venus Details as an Json Format.
+
+        return res.data
+    }
+
+
+    // Get venusSign From Database
+    const getvenusSign = async (name, date, time, place_id) => {
+        // name: String
+        // date: String (YYYY-MM-DD)
+        // time: String (HH:MM)
+        // place_id: Number
+
+        const horoscope = await getNatalHoroscope(name, date, time, place_id);    //fetch venus Details from Database
+        const venusSign = horoscope.ascendant.signName;
+
+
+        console.log("venusSign == " + venusSign);
+        return venusSign;
+    }
+
+    const addResult = async (data) => {
+        const venusSign = await getvenusSign(data.name, data.date, data.time, data.place_id);     // Get venusSign
+
+        const house = venusSignsDetail[venusSign].house;
+        const houseName = document.querySelector('#venus-main-heading');                      // Get Heading Houses 
+        houseName.innerHTML = `Venus in the ${house}`;
+
+        const signDetails = document.querySelector('#venus-zodiac-description');               // Get Description 
+        signDetails.innerHTML = venusSignsDetail[venusSign].about;   
+        
+        const fetch_talents = document.querySelector('#talents');                         // Get talents 
+        fetch_talents.innerHTML = venusSignsDetail[venusSign].talents;
+
+        const fetch_strengths = document.querySelector('#strengths');                         // Get strengths 
+        fetch_strengths.innerHTML = venusSignsDetail[venusSign].strengths;
+
+        const fetch_weakness = document.querySelector('#weakness');                         // Get weakness 
+        fetch_weakness.innerHTML = venusSignsDetail[venusSign].weaknesses;
+
+        
+        const fetch_jumplink = document.querySelector('#jumplink');                         // Get Jumplink 
+        fetch_jumplink.href = venusSignsDetail[venusSign].jumplink;      
+
+        const button_jumplink = document.querySelector('#button-jumplink');                         // Get Button Jumplink 
+        button_jumplink.innerHTML = `Continue reading about <strong>venus in the ${house}</strong>`;                            // Get Description 
+
+        const signImage = document.querySelector('#venus-zodiac-sign-image');                 // Get Image
+        const image = document.createElement('img');
+        image.src = venusSignsDetail[venusSign].image;
+        signImage.appendChild(image);
+
+        // Change Second page BG image
+        document.getElementById('venus-calculator').style.backgroundImage = "url('infographics/rising-sign-calculator/BG-2.jpg')";
+        return Promise.resolve();
+    }
+
+    function addYears(startingYear, endingYear = null) {
+        if (endingYear === null) {
+            d = new Date();
+            endingYear = d.getFullYear();
+        }
+        const years = [];
+        for (let i = endingYear; i > startingYear; i--) {
+            years.push(i);
+        }
+
+        const yearSelect = document.querySelector('#venus-year');
+        years.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.innerHTML = year;
+            yearSelect.appendChild(option);
+        })
+    }
+
+    function convertTime12to24(hour, minute, period) {
+        let time = null;
+        if (period === 'am') {
+            time = `${hour}:${minute}`;
+        } else {
+            time = `${parseInt(hour) + 12}:${minute}`;
+        }
+        return time;
+    }
+
+
+
+
+
+
+
+    ///----------------- Reset Button ------------------
+    const resetForm = () => {
+        const form = document.querySelector('#venus-horoscope-form');
+        form.reset();
+        const sign = document.querySelector('#venus-main-heading');
+        sign.innerHTML = '';
+
+        document.getElementById('venus-calculator').style.backgroundImage = "url('infographics/rising-sign-calculator/BG-1.jpg')"; 
+
+        const signDetails = document.querySelector('#venus-zodiac-description');
+        signDetails.innerHTML = '';
+        const signImage = document.querySelector('#venus-zodiac-sign-image');
+        signImage.innerHTML = '';
+        const button = form.querySelector('input[type="submit"]');
+        button.disabled = true;
+        place_id = null;
+    }
+
+    const loader = document.querySelector('.venus-loader');
+    const figureBox = loader.querySelector('figure');
+    let stopLoading = false;
+
+
+    // Change images Dynamically 
+    const addImg = (src) => {
+        const img = document.createElement('img');
+        img.src = src;
+        figureBox.innerHTML = img.outerHTML;
+    }
+
+    // Push All images to Srcs Array
+    let srcs = [];
+    for (let zodiac in venusSignsDetail) {
+        srcs.push(venusSignsDetail[zodiac].image);
+    }
+
+    function sleep(seconds) {
+        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    }
+
+    const changeImages = async (seconds) => {
+        loader.classList.remove('anime-hidden');
+        for (let i = 0; i < srcs.length; i++) {
+            if (stopLoading) {
+                figureBox.innerHTML = '';
+                loader.classList.add('anime-hidden');
+                return;
+            }
+            addImg(srcs[i]);
+            await sleep(seconds);
+        }
+        changeImages();
+    }
+
+    const toggle = () => {
+        const inputs = document.querySelector('#venus-input-container');
+        const results = document.querySelector('#venus-result-container');
+
+        inputs.classList.toggle('venus-hidden');
+        results.classList.toggle('venus-hidden');
+    }
+
+    // Start images loading randomally
+    const startLoading = () => {
+        changeImages(0.2);
+    }
+
+    // Stop images loading randomally
+    const stopLoad = async () => {
+        stopLoading = true;
+        await sleep(0.2);
+        stopLoading = false;
+    }
+
+    // get form details
+    const form = document.querySelector('#venus-horoscope-form');
+
+    setInterval(() => {
+        const formData = new FormData(form);
+        const name = formData.get('name') || 'Zephyrus';
+        const day = formData.get('day');
+        const month = formData.get('month');
+        const year = formData.get('year');
+        const hour = formData.get('hour');
+        const minute = formData.get('minute');
+        const phase = formData.get('phase');
+
+        const button = form.querySelector('input[type="submit"]');
+
+        if (day && month && year && hour && minute && phase && place_id) {
+            button.disabled = false;
+        }
+
+    }, 500);
+
+
+    // Button Trigger
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alert('button trigger');
+        const formData = new FormData(form);
+        const name = formData.get('name') || 'Zephyrus';
+        const day = formData.get('day');
+        const month = formData.get('month');
+        const year = formData.get('year');
+        const hour = formData.get('hour');
+        const minute = formData.get('minute');
+        const phase = formData.get('phase');
+
+
+        if (place_id === null) {
+            const place = formData.get('place').split(',')[0];
+
+            const places = await getPlaces(place);
+            place_id = places.data[0].id;
+
+        }
+
+        const data = {
+            "name": name,
+            "date": `${year}-${month}-${day}`,
+            "time": convertTime12to24(hour, minute, phase),
+            "place_id": place_id
+        }
+        if (checkStatus()) {
+            inputs.classList.toggle('venus-hidden');
+            startLoading();
+            await addResult(data);
+            await stopLoad();
+            results.classList.toggle('venus-hidden');
+        } else {
+            alert('Please check your internet connection');
+        }
+    });
+
+    const retryButton = document.querySelector('#venus-retry>p');
+    retryButton.addEventListener('click', () => {
+        resetForm();
+        toggle();
+    })
+
+    addYears(1900);
+    resetForm();
+
+    // Check if user is connected to internet
+
+    const request_url = 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js';
+
+    async function checkStatus() {
+        let res = null;
+        let status = null;
+        try {
+            res = await fetch(request_url);
+            status = res.status;
+        } catch (err) {
+            console.log(err);
+        }
+
+        if (status >= 200 && status < 300) {
+            await sleep(1)
+            return true;
+        } else {
+            alert('Check your internet connection');
+            await sleep(10);
+        }
+        checkStatus();
+    }
+
+    checkStatus();
+
+
+</script>
